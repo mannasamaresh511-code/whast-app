@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="dashboard-grid">
+    <div class="glass-panel">
+        <h3>Search Users</h3>
+        <form method="GET" action="{{ url_for('dashboard') }}">
+            <input type="text" name="search" placeholder="Type username...">
+            <button type="submit">Search</button>
+        </form>
+        <ul class="search-results">
+            {% for u in users %}
+                <li>
+                    <a href="{{ url_for('profile', username=u.username) }}">👤 {{ u.username }}</a>
+                    <a href="{{ url_for('dashboard', chat_with=u.username) }}" style="font-size: 0.8rem; color: #add8e6;">💬 Message</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="glass-panel">
+        {% if active_chat %}
+            <h3>Chat with {{ active_chat }}</h3>
+            <div class="chat-box" id="chat-box">
+                {% for msg in messages %}
+                    <div class="msg {% if msg.sender_id == current_user.id %}sent{% else %}received{% endif %}">
+                        {{ msg.content }}
+                    </div>
+                {% endfor %}
+            </div>
+            <form method="POST">
+                <input type="hidden" name="receiver" value="{{ active_chat }}">
+                <input type="text" name="content" placeholder="Type a message..." required autocomplete="off">
+                <button type="submit">Send</button>
+            </form>
+        {% else %}
+            <h3 style="text-align: center; margin-top: 2rem;">Search for a user and click 'Message' to start chatting!</h3>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

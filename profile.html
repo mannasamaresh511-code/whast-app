@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="glass-panel" style="max-width: 600px; margin: auto; text-align: center;">
+    {% if user.profile_pic != 'default.png' %}
+        <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" class="profile-pic" alt="Profile Pic">
+    {% else %}
+        <div class="profile-pic" style="background: rgba(255,255,255,0.2); display: inline-block; line-height: 100px; font-size: 2rem;">👤</div>
+    {% endif %}
+    
+    <h2>{{ user.username }}</h2>
+    <p style="margin: 1rem 0; font-style: italic;">"{{ user.bio }}"</p>
+    
+    {% if not is_owner %}
+        <a href="{{ url_for('dashboard', chat_with=user.username) }}"><button>Message {{ user.username }}</button></a>
+    {% endif %}
+
+    {% if is_owner %}
+        <hr style="margin: 2rem 0; border-color: rgba(255,255,255,0.2);">
+        <h3>Edit Profile</h3>
+        <form method="POST" enctype="multipart/form-data">
+            <textarea name="bio" placeholder="Update your bio">{{ user.bio }}</textarea>
+            <label style="display: block; text-align: left; margin-top: 10px;">Update Profile Picture:</label>
+            <input type="file" name="profile_pic" accept="image/*">
+            <button type="submit">Save Changes</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
